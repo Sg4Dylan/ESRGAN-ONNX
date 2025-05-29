@@ -10,7 +10,7 @@ class ESRGAN:
 
     def __init__(self, model_path, tile_size=256, prepad=10, scale=4):
         self.model_path = model_path
-        self.tile_size = tile_size
+        self.tile_size = tile_size - prepad * 2
         self.prepad = prepad
         self.scale = scale
         self._init_model()
@@ -64,11 +64,11 @@ class ESRGAN:
 
 
     def _init_model(self):
-        self.exec_provider = 'DmlExecutionProvider' # 'CPUExecutionProvider' 'DmlExecutionProvider'
+        self.exec_provider = ['DmlExecutionProvider', 'CPUExecutionProvider'] # ['CUDAExecutionProvider']
         self.session_opti = onnxruntime.SessionOptions()
         self.session_opti.enable_mem_pattern = False
         self.session = onnxruntime.InferenceSession(self.model_path, self.session_opti)
-        self.session.set_providers([self.exec_provider])
+        self.session.set_providers(self.exec_provider)
         self.model_input = self.session.get_inputs()[0].name
         return self.session, self.model_input
 
