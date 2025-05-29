@@ -6,12 +6,13 @@ You can easily try your images without installing complex machine learning envir
 ## Installation
 
 1. Install dependence
- > pip install numpy pillow onnxruntime  
+  > pip install numpy pillow onnxruntime  
 
-for NVIDIA GPU
- > pip install onnxruntime-gpu  
+ for NVIDIA GPU
+  > pip install onnxruntime-gpu  
 
-for AMD/Intel GPU, you could download and install `onnxruntime-dml` on [release page](https://github.com/Sg4Dylan/ESRGAN-ONNX/releases) or build it follow [this](https://github.com/microsoft/onnxruntime/blob/master/BUILD.md)
+ for AMD/Intel GPU
+  > pip install onnxruntime-directml
 
 2. Download `models.7z` on [release page](https://github.com/Sg4Dylan/ESRGAN-ONNX/releases)  
 3. Unzip `models.7z` in code directory
@@ -27,13 +28,15 @@ using_model_path = 'models/JPEG_Denoise/1x_JPEG_60-80-opti.onnx'
 
 ```
 # change execution provider
-self.exec_provider = 'CUDAExecutionProvider' # GPU via CUDA
-self.exec_provider = 'DmlExecutionProvider'  # GPU via DirectML
-self.exec_provider = 'CPUExecutionProvider'  # CPU Only
+self.exec_provider = ['CUDAExecutionProvider'] # GPU via CUDA
+self.exec_provider = ['DmlExecutionProvider']  # GPU via DirectML
+self.exec_provider = ['CPUExecutionProvider']  # CPU Only
+self.exec_provider = ['DmlExecutionProvider', 'CPUExecutionProvider']  # DirectML + CPU (default)
 ```
 
 ```
 # set tile size
+# For `4x_IllustrationJaNai_V1_DAT2_190k`, tile_size=224, scale=4
 model = ESRGAN(using_model_path, tile_size=1024, scale=1)
 ```
 
